@@ -1,0 +1,23 @@
+services:
+  pretix:
+    image: pretix/standalone:stable
+    container_name: pretix-app
+    cpus: "0.5"
+    volumes:
+      - ./pretix.cfg:/etc/pretix/pretix.cfg:ro
+      - pretix-data:/data
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.27
+    container_name: pretix-nginx
+    depends_on:
+      - pretix
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
+
+volumes:
+  pretix-data:
